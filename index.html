@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0d0c">
+  <title>Zeitrechnung nach GTA VI</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0b0d0c; --panel:#121614; --line:#29312c; --muted:#9ba69e; --green:#b5f36b; --white:#f3f5f1; }
+    * { box-sizing:border-box }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; padding:28px; color:var(--white); background:radial-gradient(ellipse at 50% 0%,#1b2820 0,transparent 55%),var(--bg); font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif }
+    main { width:min(100%,880px) }
+    .brand { display:flex; align-items:center; gap:10px; color:var(--muted); font-size:.78rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase }
+    .brand i { display:block; width:9px; height:9px; border-radius:50%; background:var(--green); box-shadow:0 0 16px #b5f36b88 }
+    h1 { margin:40px 0 9px; font-size:clamp(2.5rem,7vw,5.3rem); line-height:.98; letter-spacing:-.065em }
+    h1 span { color:var(--green) }
+    .intro { margin:0 0 36px; color:var(--muted); font-size:1.05rem }
+    .hero { position:relative; overflow:hidden; padding:clamp(26px,6vw,54px); border:1px solid var(--line); border-radius:24px; background:linear-gradient(135deg,#151c17,#101311 65%); box-shadow:0 24px 80px #0006 }
+    .hero:after { content:"VI"; position:absolute; right:22px; bottom:-85px; color:#ffffff06; font-weight:900; font-size:clamp(12rem,36vw,23rem); line-height:1; pointer-events:none }
+    .eyebrow { color:var(--muted); font-size:.78rem; letter-spacing:.15em; text-transform:uppercase }
+    .day { position:relative; z-index:1; margin:13px 0 7px; font-size:clamp(3rem,10vw,7.7rem); line-height:.95; letter-spacing:-.075em; font-weight:800 }
+    .day small { color:var(--green); font-size:.32em; letter-spacing:-.03em; vertical-align:baseline }
+    .date { color:#c0c9c2; font-size:1rem }
+    .clock { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:28px }
+    .unit { padding:18px 10px; text-align:center; border:1px solid var(--line); border-radius:14px; background:#0b0e0c99 }
+    .value { display:block; font-variant-numeric:tabular-nums; font-size:clamp(1.7rem,5vw,3rem); font-weight:750; letter-spacing:-.05em }
+    .label { display:block; margin-top:4px; color:var(--muted); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase }
+    footer { display:flex; justify-content:space-between; gap:16px; margin-top:18px; color:#7f8982; font-size:.78rem }
+    @media(max-width:560px) { body{padding:20px} .clock{grid-template-columns:repeat(2,1fr)} footer{flex-direction:column} }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="brand"><i></i> Die neue Zeitrechnung</div>
+    <h1>Vorher. <span>Nachher.</span></h1>
+    <p class="intro">Unsere normale Zeitrechnung läuft weiter – nur mit einem neuen Meilenstein.</p>
+    <section class="hero" aria-live="off">
+      <div class="eyebrow">Seit GTA VI</div>
+      <div class="day"><span id="day">1</span><small>. Tag</small></div>
+      <div class="date" id="date">Donnerstag, 19. November 2026 · 2026 n. Chr.</div>
+      <div class="clock" aria-label="Aktuelle Uhrzeit">
+        <div class="unit"><span class="value" id="hours">00</span><span class="label">Stunden</span></div>
+        <div class="unit"><span class="value" id="minutes">00</span><span class="label">Minuten</span></div>
+        <div class="unit"><span class="value" id="seconds">00</span><span class="label">Sekunden</span></div>
+        <div class="unit"><span class="value" id="year">2026</span><span class="label">Jahr n. Chr.</span></div>
+      </div>
+    </section>
+    <footer><span>Ein Tag nach GTA VI – und die Sekunden zählen weiter.</span><span id="zone"></span></footer>
+  </main>
+  <script>
+    // Der Startpunkt ist der 19.11.2026: Dieser Tag wird als „1. Tag nach GTA VI“ gezählt.
+    const start = new Date(2026, 10, 19);
+    const pad = n => String(n).padStart(2, '0');
+    const dateFormat = new Intl.DateTimeFormat('de-DE', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+    function update() {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const day = Math.floor((today - start) / 86400000) + 1;
+      document.querySelector('#day').textContent = Math.max(1, day).toLocaleString('de-DE');
+      document.querySelector('#date').textContent = `${dateFormat.format(now)} · ${now.getFullYear()} n. Chr.`;
+      document.querySelector('#hours').textContent = pad(now.getHours());
+      document.querySelector('#minutes').textContent = pad(now.getMinutes());
+      document.querySelector('#seconds').textContent = pad(now.getSeconds());
+      document.querySelector('#year').textContent = now.getFullYear();
+      document.querySelector('#zone').textContent = `Deine lokale Zeit · ${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
+    }
+    update();
+    setInterval(update, 1000);
+  </script>
+</body>
+</html>
+
